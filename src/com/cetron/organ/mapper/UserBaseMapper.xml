@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cetron.organ.dao.UserBaseDao">
+    <resultMap id="resultMap" type="UserBaseModel">
+        <id column="user_id" property="userId"/>
+        <result column="user_account" property="userAccount"/>
+        <result column="user_password" property="userPassword"/>
+        <result column="contact_info" property="contactInfo"/>
+        <result column="email" property="email"/>
+        <result column="create_user" property="createUser"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_user" property="updateUser"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="delete_flag" property="deleteFlag"/>
+    </resultMap>
+
+    <insert id="add" parameterType="com.cetron.organ.bo.UserBaseModel" 
+        useGeneratedKeys="true" keyProperty="userId">
+        insert into sys_user_base(user_account,user_password,contact_info,email,create_user,create_time,delete_flag)  
+             values(#{userAccount},#{userPassword},#{contactInfo},#{email},#{createUser},#{createTime},#{deleteFlag})  
+    </insert>
+    
+    <update id="update" parameterType="UserBaseModel" >
+        update sys_user_base set user_account=#{userAccount},user_password=#{userPassword},contact_info=#{contactInfo}
+         ,email=#{email},update_user=#{updateUser},update_time=#{updateTime},delete_flag=#{deleteFlag} where user_id=#{userId}
+    </update>
+
+	<select id="getById" parameterType="int" resultMap="resultMap">
+        select * from sys_user_base where user_id = #{id}
+    </select>
+    
+    <select id="listSameName" parameterType="UserBaseModel" resultMap="resultMap">
+        select * from sys_user_base where user_account = #{userAccount}
+        <if test="userId != null">
+            and user_id != #{userId}
+        </if>
+    </select>
+    
+    <select id="list" parameterType="map" resultMap="resultMap">
+        select * from sys_user_base b where b.delete_flag !='1'
+        <choose>
+		    <when test="type == 1">
+		        and b.user_id in(select user_id from sys_user u where u.user_name like concat('%',trim(#{keyword}),'%') )
+		    </when>
+		    <when test="type == 2">
+		        and b.user_id in(select ur.user_id from sys_user_role ur,sys_role r where r.role_name like concat('%',trim(#{keyword}),'%') and r.role_id=ur.role_id )
+		    </when>
+		    <otherwise>
+		        and b.contact_info like concat('%',trim(#{keyword}),'%')
+		    </otherwise>
+		  </choose>
+    </select>
+    
+    <select id="getByUserAccount" parameterType="string" resultMap="resultMap">
+        select * from sys_user_base where user_account = #{userAccount}
+    </select>
+
+</mapper>

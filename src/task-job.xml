@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+    http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd">
+	
+	<!--清理token-->
+	<bean id="clearJob" class="com.cetron.task.service.impl.ClearTaskServiceImpl" />
+
+	<!-- 清理token -->
+	<bean name="clearToken"
+		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<!-- bean名字 -->
+		<property name="targetObject" ref="clearJob" /><!--目标对象 -->
+		<!-- bean方法 -->
+		<property name="targetMethod"><!--目标方法 -->
+			<value>clearToken</value>
+		</property>
+		<property name="concurrent"><!--配置为false不允许任务并发执行 -->
+			<value>false</value>
+		</property>
+	</bean>
+
+	<!-- bean触发时间配置,指定具体的时间执行 -->
+	<bean id="clearTokenTrigger"
+		class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+		<!-- 触发bean配置 -->
+		<property name="jobDetail" ref="clearToken" />
+		<!-- 触发时间配置 -->
+		<property name="cronExpression">
+			<value>0 0/5 * * * ?</value>
+		</property>
+	</bean>
+
+	<bean id="SpringJobSchedulerFactoryBean"
+		class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
+		<property name="triggers">
+			<list>
+				<ref bean="clearTokenTrigger" />
+			</list>
+		</property>
+	</bean>
+
+</beans>
+  

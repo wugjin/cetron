@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cetron.organ.dao.UserDao">
+    <resultMap id="resultMap" type="UserModel">
+        <id column="user_id" property="userId"/>
+        <result column="user_name" property="userName"/>
+    </resultMap>
+
+    <insert id="add" parameterType="UserModel"> 
+        insert into sys_user(user_id,user_name)  
+             values(#{userId},#{userName})  
+    </insert>
+    
+    <update id="update" parameterType="UserModel" >
+        update sys_user set user_name=#{userName} where user_id=#{userId}
+    </update>
+
+	<select id="getById" parameterType="int" resultMap="resultMap">
+        select * from sys_user where user_id = #{id}
+    </select>
+    
+</mapper>

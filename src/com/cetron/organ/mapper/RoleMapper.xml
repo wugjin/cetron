@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cetron.organ.dao.RoleDao">
+    <resultMap id="resultMap" type="RoleModel">
+        <id column="role_id" property="roleId"/>
+        <result column="role_name" property="roleName"/>
+        <result column="parent_role_id" property="parentRoleId"/>
+        <result column="role_desc" property="roleDesc"/>
+        <result column="role_code" property="roleCode"/>
+    </resultMap>
+
+    <select id="listAll" resultMap="resultMap">
+        select * from sys_role
+    </select>
+
+	<select id="getById" parameterType="int" resultMap="resultMap">
+        select * from sys_role where role_id = #{id}
+    </select>
+
+</mapper>

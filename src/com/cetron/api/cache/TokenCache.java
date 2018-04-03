@@ -20,7 +20,7 @@ public class TokenCache {
 	
 	public static void set(String key, TokenUserVo value){
 		if(key!=null){
-			map.put(key, value);
+			map.put(key, value); 
 		}
 	}
 	
